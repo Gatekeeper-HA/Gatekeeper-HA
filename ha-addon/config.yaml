@@ -1,0 +1,41 @@
+name: "Gatekeeper AI Doorbell"
+description: "AI-powered doorbell assistant. Greets visitors via speaker, listens for their response, classifies their intent, and replies — all processed locally."
+version: "0.1.0"
+slug: "gatekeeper"
+url: "https://github.com/lobodorado/gatekeeper"
+arch:
+  - aarch64
+  - amd64
+startup: application
+boot: auto
+init: false
+map:
+  - data:rw
+options:
+  camera_name: "front_door"
+  mqtt_host: "core-mosquitto"
+  mqtt_port: 1883
+  mqtt_topic: "frigate/events"
+  audio_rtsp_url: "rtsp://localhost:8554/front_door"
+  go2rtc_api: "http://localhost:1984"
+  go2rtc_talk_stream: "front_door_talk"
+  dwell_seconds: 1
+  listen_seconds: 4
+  whisper_model: "tiny"
+  whisper_compute_type: "int8"
+  kokoro_voice: "af_heart"
+  greeting: "Hello. This property is monitored. Please state the purpose of your visit."
+schema:
+  camera_name: str
+  mqtt_host: str
+  mqtt_port: int
+  mqtt_topic: str
+  audio_rtsp_url: str
+  go2rtc_api: str
+  go2rtc_talk_stream: str
+  dwell_seconds: int
+  listen_seconds: int
+  whisper_model: "list(tiny|base|small)"
+  whisper_compute_type: "list(int8|float32)"
+  kokoro_voice: "list(af_heart|af_bella|af_sarah|am_michael|am_adam|bm_george|bf_emma)"
+  greeting: str

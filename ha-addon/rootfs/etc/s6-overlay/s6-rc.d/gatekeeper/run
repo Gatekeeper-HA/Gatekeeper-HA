@@ -1,0 +1,36 @@
+#!/usr/bin/with-contenv bashio
+# shellcheck shell=bash
+
+bashio::log.info "Starting Gatekeeper AI Doorbell..."
+
+# Map add-on options to environment variables
+export CAMERA_NAME="$(bashio::config 'camera_name')"
+export MQTT_HOST="$(bashio::config 'mqtt_host')"
+export MQTT_PORT="$(bashio::config 'mqtt_port')"
+export MQTT_TOPIC="$(bashio::config 'mqtt_topic')"
+export AUDIO_RTSP_URL="$(bashio::config 'audio_rtsp_url')"
+export GO2RTC_API="$(bashio::config 'go2rtc_api')"
+export GO2RTC_TALK_STREAM="$(bashio::config 'go2rtc_talk_stream')"
+export DWELL_SECONDS="$(bashio::config 'dwell_seconds')"
+export LISTEN_SECONDS="$(bashio::config 'listen_seconds')"
+export WHISPER_MODEL="$(bashio::config 'whisper_model')"
+export WHISPER_COMPUTE_TYPE="$(bashio::config 'whisper_compute_type')"
+export KOKORO_VOICE="$(bashio::config 'kokoro_voice')"
+export GREETING="$(bashio::config 'greeting')"
+
+# Persistent storage under /data (survives add-on restarts and updates)
+export AUDIO_DIR="/data/audio"
+export LOG_DIR="/data/logs"
+
+# Cache Kokoro/Whisper model weights in persistent storage
+export HF_HOME="/data/cache/huggingface"
+export TRANSFORMERS_CACHE="/data/cache/huggingface"
+export XDG_CACHE_HOME="/data/cache"
+
+bashio::log.info "Camera: ${CAMERA_NAME}"
+bashio::log.info "MQTT: ${MQTT_HOST}:${MQTT_PORT}"
+bashio::log.info "go2rtc API: ${GO2RTC_API}"
+bashio::log.info "Whisper model: ${WHISPER_MODEL} (${WHISPER_COMPUTE_TYPE})"
+bashio::log.info "Voice: ${KOKORO_VOICE}"
+
+exec python -m app.main

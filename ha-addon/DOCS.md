@@ -2,24 +2,16 @@
 
 AI-powered doorbell assistant that greets visitors via speaker, listens to their response, classifies their intent, and replies — all processed locally on your hardware.
 
-## Installation
+## Requirements
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
-2. Click the **⋮** menu (top right) → **Repositories**
-3. Paste `https://github.com/Gatekeeper-HA/Gatekeeper-HA` and click **Add**
-4. Find **Gatekeeper AI Doorbell** in the store and click **Install**
-5. Configure the options (see below) then click **Start**
-
-## Prerequisites
-
-- **Frigate** — person detection, publishes events to MQTT
-- **go2rtc** — WebRTC talkback to your camera speaker
-- **Mosquitto** (or any MQTT broker) — receives Frigate events
-- A camera with RTSP audio and speaker/talkback support
+- **Frigate** — for person detection (publishes events to MQTT)
+- **go2rtc** — for WebRTC talkback to your camera speaker
+- **Mosquitto** (or any MQTT broker) — for Frigate events
+- A camera with RTSP audio support and a speaker/talkback capability
 
 ## go2rtc setup
 
-Define a talkback stream in your `go2rtc.yaml`:
+You need a talkback stream defined in your `go2rtc.yaml`. Example:
 
 ```yaml
 streams:
@@ -29,7 +21,7 @@ streams:
     - rtsp://user:pass@192.168.1.100/backchannel
 ```
 
-Set `audio_rtsp_url` to the listening stream go2rtc exposes (e.g. `rtsp://localhost:8554/front_door`) and `go2rtc_talk_stream` to the backchannel stream name (e.g. `front_door_talk`).
+The `audio_rtsp_url` option should point to the stream go2rtc exposes for listening (e.g. `rtsp://localhost:8554/front_door`).
 
 ## Configuration
 
@@ -63,7 +55,7 @@ Set `audio_rtsp_url` to the listening stream go2rtc exposes (e.g. `rtsp://localh
 
 ## Data storage
 
-All audio clips, transcripts, and logs are stored under the add-on's `/data` directory and persist across restarts and updates.
+All audio clips, transcripts, and logs are stored in the add-on's `/data` directory, which persists across restarts and updates.
 
 - `/data/audio/in/` — captured visitor audio clips
 - `/data/audio/out/` — synthesized TTS files
@@ -71,4 +63,8 @@ All audio clips, transcripts, and logs are stored under the add-on's `/data` dir
 
 ## First run
 
-On first start, Gatekeeper downloads the Kokoro TTS model weights (~350 MB) and the selected Whisper model. Both are cached in `/data/cache/` so this only happens once. Startup may take a few minutes the first time.
+On first start, Gatekeeper will:
+1. Download the Kokoro TTS model weights (~350 MB) and Whisper model — this only happens once, they are cached in `/data/cache/`
+2. Pre-synthesize all fixed responses so playback is instant
+
+Startup may take a few minutes the first time.
