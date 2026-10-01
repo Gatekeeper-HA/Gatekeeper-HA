@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- The add-on could not build: the `base-python:3.11` image tag does not exist, and the
+  Python base images are Alpine, which has no `apt-get` and no wheels for torch or
+  ctranslate2. It now builds on the Debian (bookworm) base, pinned to `2026.08.0`.
+- `url` now points to this repository.
+
+### Changed
+- The app code is no longer copied here. The add-on installs the shared `gatekeeper`
+  package from the Gatekeeper repository, with pinned dependencies (`GATEKEEPER_REF` in
+  `build.yaml`).
+- Logging goes through the `logging` module, with the visit's Frigate event id on every line.
+
+### Added
+- Options: `session_ttl_seconds`, `sweep_interval_seconds`, the five reply texts,
+  `log_level` and `log_format`.
+- Option translations (`translations/en.yaml`), plus placeholder `icon.png` and `logo.png`.
+- CI: add-on linter and ShellCheck.
+
 ## [0.1.0] - 2026-05-14
 
 ### Added

@@ -1,20 +1,30 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+# Gatekeeper ref (release tag, branch or commit) to install from
+# github.com/Gatekeeper-HA/Gatekeeper. Set in build.yaml.
+ARG GATEKEEPER_REF=main
+
 ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
     NNPACK_DISABLE=1
 
+# Debian bookworm's python3 is 3.11, which requirements.lock targets.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-venv \
     ffmpeg \
     libsndfile1 \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Pinned dependencies first, then the package itself.
+RUN pip install -r "https://raw.githubusercontent.com/Gatekeeper-HA/Gatekeeper/${GATEKEEPER_REF}/requirements.lock" \
+    && pip install --no-deps "https://github.com/Gatekeeper-HA/Gatekeeper/archive/${GATEKEEPER_REF}.tar.gz"
 
-COPY app /app/app
 COPY rootfs /
 RUN chmod a+x /etc/s6-overlay/s6-rc.d/gatekeeper/run
