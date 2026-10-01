@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Python base images are Alpine, which has no `apt-get` and no wheels for torch or
   ctranslate2. It now builds on the Debian (bookworm) base, pinned to `2026.08.0`.
 - `url` now points to this repository.
+- Removed config the add-on linter rejects: default `startup`/`boot`, and the invalid
+  `map: data:rw` (an add-on's `/data` is always mounted).
 
 ### Changed
 - The app code is no longer copied here. The add-on installs the shared `gatekeeper`
