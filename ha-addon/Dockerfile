@@ -1,10 +1,6 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Gatekeeper ref (release tag, branch or commit) to install from
-# github.com/Gatekeeper-HA/Gatekeeper. Set in build.yaml.
-ARG GATEKEEPER_REF=main
-
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -21,6 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
+
+# Gatekeeper ref (release tag, branch or commit) to install from
+# github.com/Gatekeeper-HA/Gatekeeper. Set in build.yaml. Declared here, not at
+# the top, so changing it doesn't invalidate the apt and venv layers.
+ARG GATEKEEPER_REF=main
 
 # Pinned dependencies first, then the package itself.
 RUN pip install -r "https://raw.githubusercontent.com/Gatekeeper-HA/Gatekeeper/${GATEKEEPER_REF}/requirements.lock" \
