@@ -7,7 +7,6 @@ arch:
   - aarch64
   - amd64
 init: false
-watchdog: "http://[HOST]:[PORT:8099]/healthz"
 options:
   camera_name: "front_door"
   mqtt_host: "core-mosquitto"

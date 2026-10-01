@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (Phase 0 M2)
 - Options: `cooldown_seconds`, `visit_timeout_seconds`, `audio_retention_days` and
   `event_log_retention_days`.
-- Supervisor watchdog on Gatekeeper's `/healthz` (port 8099), so a hung add-on is
-  restarted.
+- A Docker `HEALTHCHECK` on Gatekeeper's `/healthz` (port 8099), which the Supervisor
+  uses to restart a hung add-on.
 
 ### Fixed
 - The add-on could not build: the `base-python:3.11` image tag does not exist, and the
