@@ -7,6 +7,7 @@ arch:
   - aarch64
   - amd64
 init: false
+watchdog: "http://[HOST]:[PORT:8099]/healthz"
 options:
   camera_name: "front_door"
   mqtt_host: "core-mosquitto"
@@ -19,6 +20,8 @@ options:
   listen_seconds: 4
   session_ttl_seconds: 120
   sweep_interval_seconds: 1
+  cooldown_seconds: 90
+  visit_timeout_seconds: 60
   whisper_model: "tiny"
   whisper_compute_type: "int8"
   kokoro_voice: "af_heart"
@@ -28,6 +31,8 @@ options:
   reply_maintenance: "Please wait while I notify the resident."
   reply_generic: "Thank you. Please wait while I notify the resident."
   reply_no_answer: "You are being recorded. Please state your purpose or leave the property."
+  audio_retention_days: 7
+  event_log_retention_days: 30
   log_level: "info"
   log_format: "text"
 schema:
@@ -42,6 +47,8 @@ schema:
   listen_seconds: int(1,30)
   session_ttl_seconds: int(10,)
   sweep_interval_seconds: float(0.1,)
+  cooldown_seconds: int(0,)
+  visit_timeout_seconds: int(15,)
   whisper_model: "list(tiny|base|small)"
   whisper_compute_type: "list(int8|float32)"
   kokoro_voice: "list(af_heart|af_bella|af_sarah|am_michael|am_adam|bm_george|bf_emma)"
@@ -51,5 +58,7 @@ schema:
   reply_maintenance: str
   reply_generic: str
   reply_no_answer: str
+  audio_retention_days: int(0,)
+  event_log_retention_days: int(0,)
   log_level: "list(debug|info|warning|error)"
   log_format: "list(text|json)"

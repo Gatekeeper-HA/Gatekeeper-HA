@@ -9,6 +9,7 @@ for option in \
     camera_name mqtt_host mqtt_port mqtt_topic \
     audio_rtsp_url go2rtc_api go2rtc_talk_stream \
     dwell_seconds listen_seconds session_ttl_seconds sweep_interval_seconds \
+    cooldown_seconds visit_timeout_seconds audio_retention_days event_log_retention_days \
     whisper_model whisper_compute_type kokoro_voice \
     greeting reply_delivery reply_sales reply_maintenance reply_generic reply_no_answer \
     log_level log_format; do

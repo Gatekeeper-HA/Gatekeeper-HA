@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase 0 M2)
+- Options: `cooldown_seconds`, `visit_timeout_seconds`, `audio_retention_days` and
+  `event_log_retention_days`.
+- Supervisor watchdog on Gatekeeper's `/healthz` (port 8099), so a hung add-on is
+  restarted.
+
 ### Fixed
 - The add-on could not build: the `base-python:3.11` image tag does not exist, and the
   Python base images are Alpine, which has no `apt-get` and no wheels for torch or
