@@ -2,15 +2,11 @@ name: "Gatekeeper AI Doorbell"
 description: "AI-powered doorbell assistant. Greets visitors via speaker, listens for their response, classifies their intent, and replies — all processed locally."
 version: "0.1.0"
 slug: "gatekeeper"
-url: "https://github.com/lobodorado/gatekeeper"
+url: "https://github.com/Gatekeeper-HA/Gatekeeper-HA"
 arch:
   - aarch64
   - amd64
-startup: application
-boot: auto
 init: false
-map:
-  - data:rw
 options:
   camera_name: "front_door"
   mqtt_host: "core-mosquitto"
@@ -21,21 +17,39 @@ options:
   go2rtc_talk_stream: "front_door_talk"
   dwell_seconds: 1
   listen_seconds: 4
+  session_ttl_seconds: 120
+  sweep_interval_seconds: 1
   whisper_model: "tiny"
   whisper_compute_type: "int8"
   kokoro_voice: "af_heart"
   greeting: "Hello. This property is monitored. Please state the purpose of your visit."
+  reply_delivery: "Thank you. Please leave the package at the door."
+  reply_sales: "No solicitation. Please leave the property."
+  reply_maintenance: "Please wait while I notify the resident."
+  reply_generic: "Thank you. Please wait while I notify the resident."
+  reply_no_answer: "You are being recorded. Please state your purpose or leave the property."
+  log_level: "info"
+  log_format: "text"
 schema:
   camera_name: str
   mqtt_host: str
-  mqtt_port: int
+  mqtt_port: port
   mqtt_topic: str
   audio_rtsp_url: str
-  go2rtc_api: str
+  go2rtc_api: url
   go2rtc_talk_stream: str
-  dwell_seconds: int
-  listen_seconds: int
+  dwell_seconds: float(0,)
+  listen_seconds: int(1,30)
+  session_ttl_seconds: int(10,)
+  sweep_interval_seconds: float(0.1,)
   whisper_model: "list(tiny|base|small)"
   whisper_compute_type: "list(int8|float32)"
   kokoro_voice: "list(af_heart|af_bella|af_sarah|am_michael|am_adam|bm_george|bf_emma)"
   greeting: str
+  reply_delivery: str
+  reply_sales: str
+  reply_maintenance: str
+  reply_generic: str
+  reply_no_answer: str
+  log_level: "list(debug|info|warning|error)"
+  log_format: "list(text|json)"

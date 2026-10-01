@@ -36,10 +36,19 @@ The `audio_rtsp_url` option should point to the stream go2rtc exposes for listen
 | `go2rtc_talk_stream` | `front_door_talk` | go2rtc stream name for talkback |
 | `dwell_seconds` | `1` | Seconds a person must be visible before triggering |
 | `listen_seconds` | `4` | How long to record the visitor's response |
+| `session_ttl_seconds` | `120` | Forget a Frigate event this long after its last update |
+| `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
 | `whisper_model` | `tiny` | Whisper STT model size. `tiny` is fastest; `small` is more accurate |
 | `whisper_compute_type` | `int8` | Quantization — `int8` for CPU, `float32` if you have issues |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
-| `greeting` | *(see below)* | What Gatekeeper says when a visitor is detected |
+| `greeting` | *Hello. This property is monitored. Please state the purpose of your visit.* | What Gatekeeper says when a visitor is detected |
+| `reply_delivery` | *Thank you. Please leave the package at the door.* | Reply to a delivery |
+| `reply_sales` | *No solicitation. Please leave the property.* | Reply to a solicitor |
+| `reply_maintenance` | *Please wait while I notify the resident.* | Reply to a service visit |
+| `reply_generic` | *Thank you. Please wait while I notify the resident.* | Reply to any other answer |
+| `reply_no_answer` | *You are being recorded. Please state your purpose or leave the property.* | Reply to silence or a one-word answer |
+| `log_level` | `info` | `debug`, `info`, `warning` or `error` |
+| `log_format` | `text` | `text`, or `json` for one JSON object per line. Every line carries the visit's Frigate event id |
 
 ## Available voices
 

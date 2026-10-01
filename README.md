@@ -44,10 +44,19 @@ Set `audio_rtsp_url` to the listening stream go2rtc exposes (e.g. `rtsp://localh
 | `go2rtc_talk_stream` | `front_door_talk` | go2rtc stream name for talkback |
 | `dwell_seconds` | `1` | Seconds a person must be visible before triggering |
 | `listen_seconds` | `4` | How long to record the visitor's response |
+| `session_ttl_seconds` | `120` | Forget a Frigate event this long after its last update |
+| `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
 | `whisper_model` | `tiny` | Whisper STT model size. `tiny` is fastest; `small` is more accurate |
 | `whisper_compute_type` | `int8` | Quantization — `int8` for CPU, `float32` if you have issues |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
-| `greeting` | *(see below)* | What Gatekeeper says when a visitor is detected |
+| `greeting` | *Hello. This property is monitored. Please state the purpose of your visit.* | What Gatekeeper says when a visitor is detected |
+| `reply_delivery` | *Thank you. Please leave the package at the door.* | Reply to a delivery |
+| `reply_sales` | *No solicitation. Please leave the property.* | Reply to a solicitor |
+| `reply_maintenance` | *Please wait while I notify the resident.* | Reply to a service visit |
+| `reply_generic` | *Thank you. Please wait while I notify the resident.* | Reply to any other answer |
+| `reply_no_answer` | *You are being recorded. Please state your purpose or leave the property.* | Reply to silence or a one-word answer |
+| `log_level` | `info` | `debug`, `info`, `warning` or `error` |
+| `log_format` | `text` | `text`, or `json` for one JSON object per line. Every line carries the visit's Frigate event id |
 
 ## Available voices
 
@@ -72,3 +81,10 @@ All audio clips, transcripts, and logs are stored under the add-on's `/data` dir
 ## First run
 
 On first start, Gatekeeper downloads the Kokoro TTS model weights (~350 MB) and the selected Whisper model. Both are cached in `/data/cache/` so this only happens once. Startup may take a few minutes the first time.
+
+## About the code
+
+The add-on installs the `gatekeeper` Python package from the
+[Gatekeeper](https://github.com/Gatekeeper-HA/Gatekeeper) repository, pinned to the release
+set by `GATEKEEPER_REF` in `ha-addon/build.yaml`. The Docker Compose rig and this add-on run
+the same code; only the defaults differ.

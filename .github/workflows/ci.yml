@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lint add-on config
+        uses: frenck/action-app-linter@v2
+        with:
+          path: "./ha-addon"
+      - name: ShellCheck s6 run script
+        run: shellcheck ha-addon/rootfs/etc/s6-overlay/s6-rc.d/gatekeeper/run
