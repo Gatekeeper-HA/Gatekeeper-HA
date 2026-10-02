@@ -7,14 +7,18 @@ arch:
   - aarch64
   - amd64
 init: false
+# Uses Home Assistant's MQTT service (e.g. the Mosquitto add-on) when there is
+# one; the mqtt_* options override it, e.g. for an external broker.
+services:
+  - "mqtt:want"
 options:
   camera_name: "front_door"
-  mqtt_host: "core-mosquitto"
-  mqtt_port: 1883
   mqtt_topic: "frigate/events"
-  audio_rtsp_url: "rtsp://localhost:8554/front_door"
-  go2rtc_api: "http://localhost:1984"
+  # Defaults for the Frigate add-on; see the documentation for other installs.
+  audio_rtsp_url: "rtsp://ccab4aaf-frigate:8554/front_door"
+  go2rtc_api: "http://ccab4aaf-frigate:1984"
   go2rtc_talk_stream: "front_door_talk"
+  frigate_api: "http://ccab4aaf-frigate:5000"
   dwell_seconds: 1
   listen_seconds: 4
   session_ttl_seconds: 120
@@ -36,12 +40,16 @@ options:
   log_format: "text"
 schema:
   camera_name: str
-  mqtt_host: str
-  mqtt_port: port
+  mqtt_host: str?
+  mqtt_port: port?
+  mqtt_username: str?
+  mqtt_password: password?
   mqtt_topic: str
   audio_rtsp_url: str
   go2rtc_api: url
   go2rtc_talk_stream: str
+  frigate_api: url
+  trigger_zones: str?
   dwell_seconds: float(0,)
   listen_seconds: int(1,30)
   session_ttl_seconds: int(10,)
@@ -57,6 +65,12 @@ schema:
   reply_maintenance: str
   reply_generic: str
   reply_no_answer: str
+  ntfy_url: url?
+  ntfy_topic: str?
+  ntfy_token: password?
+  reolink_host: str?
+  reolink_username: str?
+  reolink_password: password?
   audio_retention_days: int(0,)
   event_log_retention_days: int(0,)
   log_level: "list(debug|info|warning|error)"

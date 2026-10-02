@@ -3,19 +3,38 @@
 
 bashio::log.info "Starting Gatekeeper AI Doorbell..."
 
+# MQTT defaults to Home Assistant's MQTT service (e.g. the Mosquitto add-on),
+# with its credentials; mqtt_* options set below override it.
+if bashio::services.available "mqtt"; then
+    MQTT_HOST="$(bashio::services mqtt 'host')"
+    MQTT_PORT="$(bashio::services mqtt 'port')"
+    MQTT_USERNAME="$(bashio::services mqtt 'username')"
+    MQTT_PASSWORD="$(bashio::services mqtt 'password')"
+    export MQTT_HOST MQTT_PORT MQTT_USERNAME MQTT_PASSWORD
+fi
+
 # Each add-on option is read by Gatekeeper from the upper-cased environment
-# variable of the same name (camera_name -> CAMERA_NAME).
+# variable of the same name (camera_name -> CAMERA_NAME). Unset optional
+# options are left out, so Gatekeeper uses its defaults.
 for option in \
-    camera_name mqtt_host mqtt_port mqtt_topic \
-    audio_rtsp_url go2rtc_api go2rtc_talk_stream \
+    camera_name mqtt_host mqtt_port mqtt_username mqtt_password mqtt_topic \
+    audio_rtsp_url go2rtc_api go2rtc_talk_stream frigate_api trigger_zones \
     dwell_seconds listen_seconds session_ttl_seconds sweep_interval_seconds \
     cooldown_seconds visit_timeout_seconds audio_retention_days event_log_retention_days \
     whisper_model whisper_compute_type kokoro_voice \
     greeting reply_delivery reply_sales reply_maintenance reply_generic reply_no_answer \
+    ntfy_url ntfy_topic ntfy_token reolink_host reolink_username reolink_password \
     log_level log_format; do
-    value="$(bashio::config "${option}")"
-    export "${option^^}=${value}"
+    if bashio::config.has_value "${option}"; then
+        value="$(bashio::config "${option}")"
+        export "${option^^}=${value}"
+    fi
 done
+
+if [[ -z "${MQTT_HOST:-}" ]]; then
+    bashio::log.warning "No MQTT broker: install the Mosquitto broker add-on or set mqtt_host."
+    export MQTT_HOST="core-mosquitto"
+fi
 
 # Persistent storage under /data (survives add-on restarts and updates)
 export AUDIO_DIR="/data/audio"
@@ -27,8 +46,9 @@ export TRANSFORMERS_CACHE="/data/cache/huggingface"
 export XDG_CACHE_HOME="/data/cache"
 
 bashio::log.info "Camera: ${CAMERA_NAME}"
-bashio::log.info "MQTT: ${MQTT_HOST}:${MQTT_PORT}"
+bashio::log.info "MQTT: ${MQTT_HOST}:${MQTT_PORT:-1883} (user: ${MQTT_USERNAME:-none})"
 bashio::log.info "go2rtc API: ${GO2RTC_API}"
+bashio::log.info "Notifications: ${NTFY_URL:-off}; doorbell button: ${REOLINK_HOST:-off}"
 bashio::log.info "Whisper model: ${WHISPER_MODEL} (${WHISPER_COMPUTE_TYPE})"
 bashio::log.info "Voice: ${KOKORO_VOICE}"
 
