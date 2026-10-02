@@ -46,6 +46,8 @@ Set `audio_rtsp_url` to the listening stream go2rtc exposes (e.g. `rtsp://localh
 | `listen_seconds` | `4` | How long to record the visitor's response |
 | `session_ttl_seconds` | `120` | Forget a Frigate event this long after its last update |
 | `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
+| `cooldown_seconds` | `90` | After a visit, new person detections this soon are merged into it instead of greeting again |
+| `visit_timeout_seconds` | `60` | Give up on a visit (greet, listen, reply) after this long |
 | `whisper_model` | `tiny` | Whisper STT model size. `tiny` is fastest; `small` is more accurate |
 | `whisper_compute_type` | `int8` | Quantization — `int8` for CPU, `float32` if you have issues |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
@@ -55,6 +57,8 @@ Set `audio_rtsp_url` to the listening stream go2rtc exposes (e.g. `rtsp://localh
 | `reply_maintenance` | *Please wait while I notify the resident.* | Reply to a service visit |
 | `reply_generic` | *Thank you. Please wait while I notify the resident.* | Reply to any other answer |
 | `reply_no_answer` | *You are being recorded. Please state your purpose or leave the property.* | Reply to silence or a one-word answer |
+| `audio_retention_days` | `7` | Delete visitor recordings older than this. `0` keeps them forever |
+| `event_log_retention_days` | `30` | Delete daily visit logs older than this. `0` keeps them forever |
 | `log_level` | `info` | `debug`, `info`, `warning` or `error` |
 | `log_format` | `text` | `text`, or `json` for one JSON object per line. Every line carries the visit's Frigate event id |
 

@@ -27,5 +27,10 @@ ARG GATEKEEPER_REF=main
 RUN pip install -r "https://raw.githubusercontent.com/Gatekeeper-HA/Gatekeeper/${GATEKEEPER_REF}/requirements.lock" \
     && pip install --no-deps "https://github.com/Gatekeeper-HA/Gatekeeper/archive/${GATEKEEPER_REF}.tar.gz"
 
+# Gatekeeper's /healthz (port 8099). Startup (loading Kokoro and Whisper,
+# pre-synthesizing phrases) takes several minutes on small CPUs.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10m --retries=3 \
+    CMD ["/opt/venv/bin/python", "-m", "gatekeeper.health"]
+
 COPY rootfs /
 RUN chmod a+x /etc/s6-overlay/s6-rc.d/gatekeeper/run

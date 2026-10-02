@@ -29,6 +29,18 @@ configuration:
     description: Forget a Frigate event this long after its last update.
   sweep_interval_seconds:
     name: Session check interval (seconds)
+  cooldown_seconds:
+    name: Cooldown (seconds)
+    description: After a visit, new person detections this soon are treated as the same visitor and not greeted again.
+  visit_timeout_seconds:
+    name: Visit timeout (seconds)
+    description: Give up on a visit (greet, listen, reply) after this long.
+  audio_retention_days:
+    name: Keep visitor recordings (days)
+    description: Delete recordings of visitors' answers older than this. 0 keeps them forever.
+  event_log_retention_days:
+    name: Keep visit logs (days)
+    description: Delete daily visit logs (with transcripts) older than this. 0 keeps them forever.
   whisper_model:
     name: Whisper model
     description: Speech-to-text model size. tiny is fastest; small is most accurate.
