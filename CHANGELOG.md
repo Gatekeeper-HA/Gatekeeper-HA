@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (Phase 0 M3)
+- MQTT: uses Home Assistant's MQTT service (the Mosquitto add-on) with its login by
+  default (`services: mqtt:want`); `mqtt_host`/`mqtt_port`/`mqtt_username`/`mqtt_password`
+  override it for an external broker.
+- Options for notifications (`ntfy_url`, `ntfy_topic`, `ntfy_token`, `frigate_api`), the
+  Reolink doorbell button (`reolink_host`, `reolink_username`, `reolink_password`) and
+  `trigger_zones`.
+- `reply_pressed` (said on a doorbell press during a visit's cooldown), and the English-only
+  Whisper models (`tiny.en`, `base.en`, `small.en`).
+
+### Changed (Phase 0 M3)
+- Defaults now reach the Frigate add-on (`ccab4aaf-frigate`) instead of `localhost`, which
+  another add-on can't reach. `DOCS.md` covers other Frigate installs.
+- Unset optional options are no longer passed to Gatekeeper as the text "null".
+- `DOCS.md` is the full reference; the README is a short install guide.
+
 ### Added (Phase 0 M2)
 - Options: `cooldown_seconds`, `visit_timeout_seconds`, `audio_retention_days` and
   `event_log_retention_days`.

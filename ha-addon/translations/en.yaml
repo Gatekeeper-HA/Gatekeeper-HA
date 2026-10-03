@@ -4,9 +4,14 @@ configuration:
     description: Must match the camera name in your Frigate config.
   mqtt_host:
     name: MQTT host
-    description: MQTT broker host. core-mosquitto is Home Assistant's Mosquitto add-on.
+    description: Leave empty to use Home Assistant's MQTT broker (the Mosquitto add-on). Set it for an external broker.
   mqtt_port:
     name: MQTT port
+  mqtt_username:
+    name: MQTT username
+    description: Only for an external broker; the Mosquitto add-on's login is used automatically.
+  mqtt_password:
+    name: MQTT password
   mqtt_topic:
     name: Frigate event topic
     description: Leave as frigate/events unless you changed Frigate's topic prefix.
@@ -18,6 +23,12 @@ configuration:
   go2rtc_talk_stream:
     name: go2rtc talkback stream
     description: go2rtc stream with backchannel=1 that plays audio on the camera speaker.
+  frigate_api:
+    name: Frigate API URL
+    description: Used for the visitor's snapshot in notifications.
+  trigger_zones:
+    name: Trigger zones
+    description: Comma-separated Frigate zones (e.g. porch). Only people who enter one are greeted. Empty means anywhere in view.
   dwell_seconds:
     name: Dwell time (seconds)
     description: How long a person must be visible before Gatekeeper greets them.
@@ -63,6 +74,24 @@ configuration:
   reply_no_answer:
     name: Reply to no answer
     description: Said when the visitor stays silent or gives a one-word answer.
+  reply_pressed:
+    name: Reply to a doorbell press during a visit
+    description: Said when the doorbell is pressed during a visit or right after one.
+  ntfy_url:
+    name: ntfy server URL
+    description: Send notifications (with the visitor's snapshot) to this ntfy server. Empty disables them.
+  ntfy_topic:
+    name: ntfy topic
+    description: Default doorbell.
+  ntfy_token:
+    name: ntfy access token
+  reolink_host:
+    name: Reolink doorbell host
+    description: IP or hostname of a Reolink doorbell, to react to button presses. Empty disables them.
+  reolink_username:
+    name: Reolink username
+  reolink_password:
+    name: Reolink password
   log_level:
     name: Log level
   log_format:
