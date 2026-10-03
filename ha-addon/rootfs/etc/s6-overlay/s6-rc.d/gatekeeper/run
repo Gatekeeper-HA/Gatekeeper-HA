@@ -22,7 +22,7 @@ for option in \
     dwell_seconds listen_seconds session_ttl_seconds sweep_interval_seconds \
     cooldown_seconds visit_timeout_seconds audio_retention_days event_log_retention_days \
     whisper_model whisper_compute_type kokoro_voice \
-    greeting reply_delivery reply_sales reply_maintenance reply_generic reply_no_answer \
+    greeting reply_delivery reply_sales reply_maintenance reply_generic reply_no_answer reply_pressed \
     ntfy_url ntfy_topic ntfy_token reolink_host reolink_username reolink_password \
     log_level log_format; do
     if bashio::config.has_value "${option}"; then

@@ -51,7 +51,7 @@ Set `ntfy_url` (and `ntfy_topic`, `ntfy_token` if your server needs them) to get
 
 ## Doorbell button
 
-Set `reolink_host`, `reolink_username` and `reolink_password` for a Reolink doorbell, and Gatekeeper reacts to its button. It logs in over HTTPS and listens for the camera's push events on port 9000. A press greets the visitor right away, even before Frigate has detected them. A press during a visit or just after it sends a *Doorbell pressed* notification.
+Set `reolink_host`, `reolink_username` and `reolink_password` for a Reolink doorbell, and Gatekeeper reacts to its button. It logs in over HTTPS and listens for the camera's push events on port 9000. A press greets the visitor right away, even before Frigate has detected them. A press during a visit or just after it sends a *Doorbell pressed* notification and says `reply_pressed`.
 
 ## Zones
 
@@ -75,7 +75,7 @@ To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set 
 | `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
 | `cooldown_seconds` | `90` | After a visit, new person detections this soon are merged into it instead of greeting again |
 | `visit_timeout_seconds` | `60` | Give up on a visit (greet, listen, reply) after this long |
-| `whisper_model` | `tiny` | Whisper STT model size. `tiny` is fastest; `small` is more accurate |
+| `whisper_model` | `tiny` | Whisper STT model. `tiny` is fastest; `base.en` hears noticeably better (about twice the CPU time) |
 | `whisper_compute_type` | `int8` | Quantization: `int8` for CPU, `float32` if you have issues |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
 | `greeting` | *Hello. This property is monitored. Please state the purpose of your visit.* | What Gatekeeper says when a visitor is detected |
@@ -84,6 +84,7 @@ To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set 
 | `reply_maintenance` | *Please wait while I notify the resident.* | Reply to a service visit |
 | `reply_generic` | *Thank you. Please wait while I notify the resident.* | Reply to any other answer |
 | `reply_no_answer` | *You are being recorded. Please state your purpose or leave the property.* | Reply to silence or a one-word answer |
+| `reply_pressed` | *The resident has already been notified.* | Said when the doorbell is pressed during a visit or right after one |
 | `ntfy_url`, `ntfy_topic`, `ntfy_token` | *(off)*, `doorbell`, *(none)* | ntfy notifications |
 | `reolink_host`, `reolink_username`, `reolink_password` | *(off)* | Reolink doorbell button presses |
 | `audio_retention_days` | `7` | Delete visitor recordings older than this. `0` keeps them forever |

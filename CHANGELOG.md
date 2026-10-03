@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Options for notifications (`ntfy_url`, `ntfy_topic`, `ntfy_token`, `frigate_api`), the
   Reolink doorbell button (`reolink_host`, `reolink_username`, `reolink_password`) and
   `trigger_zones`.
+- `reply_pressed` (said on a doorbell press during a visit's cooldown), and the English-only
+  Whisper models (`tiny.en`, `base.en`, `small.en`).
 
 ### Changed (Phase 0 M3)
 - Defaults now reach the Frigate add-on (`ccab4aaf-frigate`) instead of `localhost`, which

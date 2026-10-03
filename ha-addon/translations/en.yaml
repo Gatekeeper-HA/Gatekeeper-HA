@@ -74,6 +74,9 @@ configuration:
   reply_no_answer:
     name: Reply to no answer
     description: Said when the visitor stays silent or gives a one-word answer.
+  reply_pressed:
+    name: Reply to a doorbell press during a visit
+    description: Said when the doorbell is pressed during a visit or right after one.
   ntfy_url:
     name: ntfy server URL
     description: Send notifications (with the visitor's snapshot) to this ntfy server. Empty disables them.
