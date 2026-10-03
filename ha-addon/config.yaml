@@ -24,7 +24,7 @@ options:
   session_ttl_seconds: 120
   sweep_interval_seconds: 1
   cooldown_seconds: 90
-  visit_timeout_seconds: 60
+  visit_timeout_seconds: 90
   whisper_model: "tiny"
   whisper_compute_type: "int8"
   kokoro_voice: "af_heart"

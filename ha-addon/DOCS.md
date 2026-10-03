@@ -74,7 +74,7 @@ To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set 
 | `session_ttl_seconds` | `120` | Forget a Frigate event this long after its last update |
 | `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
 | `cooldown_seconds` | `90` | After a visit, new person detections this soon are merged into it instead of greeting again |
-| `visit_timeout_seconds` | `60` | Give up on a visit (greet, listen, reply) after this long |
+| `visit_timeout_seconds` | `90` | Give up on a visit (greet, listen, reply) after this long |
 | `whisper_model` | `tiny` | Whisper STT model. `tiny` is fastest; `base.en` hears noticeably better (about twice the CPU time) |
 | `whisper_compute_type` | `int8` | Quantization: `int8` for CPU, `float32` if you have issues |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
