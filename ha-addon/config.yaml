@@ -1,6 +1,6 @@
 name: "Gatekeeper AI Doorbell"
 description: "AI-powered doorbell assistant. Greets visitors via speaker, listens for their response, classifies their intent, and replies — all processed locally."
-version: "0.1.0"
+version: "0.2.0-rc.1"
 slug: "gatekeeper"
 url: "https://github.com/Gatekeeper-HA/Gatekeeper-HA"
 arch:

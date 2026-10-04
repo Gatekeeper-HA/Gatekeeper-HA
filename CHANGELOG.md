@@ -7,47 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added (Phase 0 M3)
-- MQTT: uses Home Assistant's MQTT service (the Mosquitto add-on) with its login by
-  default (`services: mqtt:want`); `mqtt_host`/`mqtt_port`/`mqtt_username`/`mqtt_password`
-  override it for an external broker.
-- Options for notifications (`ntfy_url`, `ntfy_topic`, `ntfy_token`, `frigate_api`), the
-  Reolink doorbell button (`reolink_host`, `reolink_username`, `reolink_password`) and
-  `trigger_zones`.
-- `reply_pressed` (said on a doorbell press during a visit's cooldown), and the English-only
-  Whisper models (`tiny.en`, `base.en`, `small.en`).
+## [0.2.0-rc.1] - 2026-10-04
 
-### Changed (Phase 0 M3)
-- Defaults now reach the Frigate add-on (`ccab4aaf-frigate`) instead of `localhost`, which
-  another add-on can't reach. `DOCS.md` covers other Frigate installs.
-- Unset optional options are no longer passed to Gatekeeper as the text "null".
-- `DOCS.md` is the full reference; the README is a short install guide.
-
-### Added (Phase 0 M2)
-- Options: `cooldown_seconds`, `visit_timeout_seconds`, `audio_retention_days` and
-  `event_log_retention_days`.
-- A Docker `HEALTHCHECK` on Gatekeeper's `/healthz` (port 8099), which the Supervisor
-  uses to restart a hung add-on.
+Phase 0 release candidate. The add-on now builds, installs the same tested `gatekeeper`
+package as the compose stack (pinned to Gatekeeper `v0.2.0-rc.1`), and works with the Frigate
+and Mosquitto add-ons out of the box. See the
+[Gatekeeper changelog](https://github.com/Gatekeeper-HA/Gatekeeper/blob/v0.2.0-rc.1/CHANGELOG.md)
+for what Gatekeeper itself gained: hearing the visitor's answer, notifications, the doorbell
+button, zones, a second listening turn, health checks and retention.
 
 ### Fixed
-- The add-on could not build: the `base-python:3.11` image tag does not exist, and the
-  Python base images are Alpine, which has no `apt-get` and no wheels for torch or
-  ctranslate2. It now builds on the Debian (bookworm) base, pinned to `2026.08.0`.
-- `url` now points to this repository.
-- Removed config the add-on linter rejects: default `startup`/`boot`, and the invalid
-  `map: data:rw` (an add-on's `/data` is always mounted).
-
-### Changed
-- The app code is no longer copied here. The add-on installs the shared `gatekeeper`
-  package from the Gatekeeper repository, with pinned dependencies (`GATEKEEPER_REF` in
-  `build.yaml`).
-- Logging goes through the `logging` module, with the visit's Frigate event id on every line.
+- **The add-on could not build.** `build.yaml` used a `base-python:3.11` tag that doesn't
+  exist, and the Python base images are Alpine, which has no `apt-get` and no wheels for
+  torch or ctranslate2. It now builds on the Debian (bookworm) base, pinned to `2026.08.0`.
+- **Defaults reach the Frigate add-on** (`ccab4aaf-frigate`) instead of `localhost`, which
+  another add-on can't reach.
+- **MQTT logs in:** it uses Home Assistant's MQTT service (the Mosquitto add-on) and its
+  login by default. Before, it connected anonymously, which the Mosquitto add-on rejects.
+- **Config cleanup:**
+  - `url` points to this repository.
+  - Config the add-on linter rejects was removed: the default `startup`/`boot` values and an
+    invalid `map`.
+  - Unset optional options are no longer passed on as the text "null".
 
 ### Added
-- Options: `session_ttl_seconds`, `sweep_interval_seconds`, the five reply texts,
-  `log_level` and `log_format`.
-- Option translations (`translations/en.yaml`), plus placeholder `icon.png` and `logo.png`.
-- CI: add-on linter and ShellCheck.
+- **Options:**
+  - Notifications via ntfy: `ntfy_url`, `ntfy_topic`, `ntfy_token`, `frigate_api`.
+  - The Reolink doorbell button: `reolink_host`, `reolink_username`, `reolink_password`.
+  - `trigger_zones`.
+  - Every reply text, including `reply_pressed`.
+  - `cooldown_seconds`, `visit_timeout_seconds` and the session timings.
+  - `audio_retention_days` and `event_log_retention_days`.
+  - `log_level` and `log_format`.
+  - For an external broker: `mqtt_host`, `mqtt_port`, `mqtt_username`, `mqtt_password`.
+  - The English-only Whisper models (`tiny.en`, `base.en`, `small.en`).
+- **Health:** a Docker `HEALTHCHECK` on Gatekeeper's `/healthz`, so the Supervisor restarts
+  a hung add-on.
+- **Store polish:** option translations, plus a placeholder icon and logo.
+- **CI:** the HA app linter and ShellCheck.
+
+### Changed
+- **No more copied code:** the add-on installs the shared `gatekeeper` package from the
+  Gatekeeper repository at the release set by `GATEKEEPER_REF` in `build.yaml`, with
+  pinned dependencies.
+- **Docs:** `DOCS.md` is the full reference (reaching Frigate, MQTT, notifications, the
+  button, zones, every option); the README is a short install guide.
 
 ## [0.1.0] - 2026-05-14
 

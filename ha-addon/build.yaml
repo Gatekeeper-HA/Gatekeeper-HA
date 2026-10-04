@@ -2,5 +2,5 @@ build_from:
   aarch64: "ghcr.io/home-assistant/aarch64-base-debian:bookworm-2026.08.0"
   amd64: "ghcr.io/home-assistant/amd64-base-debian:bookworm-2026.08.0"
 args:
-  # Pin to a Gatekeeper release tag (e.g. v0.2.0) before publishing an add-on version.
-  GATEKEEPER_REF: "main"
+  # The Gatekeeper release this add-on version installs. Bump with the add-on version.
+  GATEKEEPER_REF: "v0.2.0-rc.1"
