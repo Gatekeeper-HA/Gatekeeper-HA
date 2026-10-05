@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Docs, from installing on a clean Home Assistant OS:**
+  - A complete minimal Frigate config: the MQTT login from the Mosquitto add-on,
+    `detect: enabled: true` (without it Frigate detects nothing and nobody is greeted),
+    `#backchannel=0` on the camera stream, and placeholders that are clearly placeholders.
+  - Set up the MQTT integration Home Assistant discovers, or no Gatekeeper device appears.
+  - Install builds on your machine and can take over an hour on slow hardware; don't click
+    *Install* again when the button comes back.
+  - Notifications and the doorbell button are off until their options are set.
+  - How to tell when it's ready, and a troubleshooting section.
+
 ## [0.2.0-rc.1] - 2026-10-04
 
 Phase 0 release candidate. The add-on now builds, installs the same tested `gatekeeper`
