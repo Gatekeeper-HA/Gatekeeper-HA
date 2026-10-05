@@ -22,3 +22,13 @@ The add-on installs the `gatekeeper` Python package from the
 [Gatekeeper](https://github.com/Gatekeeper-HA/Gatekeeper) repository, pinned to the release
 set by `GATEKEEPER_REF` in `ha-addon/build.yaml`. The Docker Compose rig and this add-on run
 the same code; only the defaults differ.
+
+## Contributing
+
+Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). Your first pull request
+asks you to agree to the
+[Contributor License Agreement](https://github.com/Gatekeeper-HA/Gatekeeper/blob/main/CLA.md).
+
+## License
+
+AGPL-3.0 — see [LICENSE](LICENSE)
