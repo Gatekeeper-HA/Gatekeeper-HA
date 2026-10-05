@@ -4,15 +4,17 @@ AI-powered doorbell assistant that greets visitors via speaker, listens to their
 
 ## Installation
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
+You need Frigate (the Frigate add-on works out of the box), an MQTT broker (the Mosquitto broker add-on is used automatically), and a camera with RTSP audio and talkback, e.g. a Reolink doorbell. Set up Frigate first, with person detection and the talkback stream: see [Frigate setup](ha-addon/DOCS.md#frigate-setup).
+
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store** (add-ons are called **Apps** in newer Home Assistant versions)
 2. Click the **⋮** menu (top right) → **Repositories**
 3. Paste `https://github.com/Gatekeeper-HA/Gatekeeper-HA` and click **Add**
-4. Find **Gatekeeper AI Doorbell** in the store and click **Install**
-5. Configure the options, then click **Start**
+4. Find **Gatekeeper AI Doorbell** in the store and click **Install**. It's built on your machine, which takes from about 10 minutes to over an hour on a slow machine. If the **Install** button comes back after a page refresh, it's still building: don't click it again.
+5. In the **Configuration** tab, set `ntfy_url` (and `ntfy_token`) for notifications and the `reolink_*` options for the doorbell button. Both are off until you set them. The defaults already reach the Frigate and Mosquitto add-ons.
+6. Click **Start**. The first start takes a few minutes; it's ready when the **Log** tab shows `connected to MQTT`.
+7. If you haven't yet: **Settings → Devices & services**, add the discovered **MQTT** integration. A **Gatekeeper** device appears.
 
-You need Frigate (the Frigate add-on works out of the box), an MQTT broker (the Mosquitto broker add-on is used automatically), and a camera with RTSP audio and talkback, e.g. a Reolink doorbell.
-
-See the add-on's **Documentation** tab ([DOCS.md](ha-addon/DOCS.md)) for setup and every option: go2rtc talkback streams, reaching Frigate, notifications, the doorbell button and zones.
+See the add-on's **Documentation** tab ([DOCS.md](ha-addon/DOCS.md)) for every option and for troubleshooting: Frigate and go2rtc setup, reaching Frigate, notifications, the doorbell button and zones.
 
 ## About the code
 
