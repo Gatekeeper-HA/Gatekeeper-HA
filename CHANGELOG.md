@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Contributing guide and CLA:** `CONTRIBUTING.md`, and a GitHub workflow that asks
+  first-time contributors to agree to the Contributor License Agreement (kept in the
+  Gatekeeper repository, with Lobo Dorado LLC) and records the agreement on the
+  `cla-signatures` branch.
+
 ### Changed
 - **Docs, from installing on a clean Home Assistant OS:**
   - A complete minimal Frigate config: the MQTT login from the Mosquitto add-on,
