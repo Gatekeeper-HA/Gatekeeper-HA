@@ -3,4 +3,4 @@ build_from:
   amd64: "ghcr.io/home-assistant/amd64-base-debian:bookworm-2026.08.0"
 args:
   # The Gatekeeper release this add-on version installs. Bump with the add-on version.
-  GATEKEEPER_REF: "v0.2.0"
+  GATEKEEPER_REF: "v0.2.1"
