@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-12
+
+Installs Gatekeeper `v0.2.0`, the release candidate's code after a week on a live porch with
+every Phase 0 exit criterion met. The add-on was installed and tested on a clean Home
+Assistant OS (Frigate 0.18 and Mosquitto add-ons) on 2026-10-04; the docs below come from
+that test.
+
 ### Added
 - **Contributing guide and CLA:** `CONTRIBUTING.md`, and a GitHub workflow that asks
   first-time contributors to agree to the Contributor License Agreement (kept in the
