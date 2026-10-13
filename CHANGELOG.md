@@ -17,6 +17,7 @@ Installs Gatekeeper `v0.2.1`.
 - **An overlong recording is kept** and transcribed, instead of being thrown away.
 - **No language-model download at every start:** spaCy's English model is part of the image.
   Internet access is now only needed on the first start; later starts use the cached models.
+
 ## [0.2.0] - 2026-10-12
 
 Installs Gatekeeper `v0.2.0`, the release candidate's code after a week on a live porch with
