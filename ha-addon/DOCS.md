@@ -139,7 +139,7 @@ Audio clips, transcripts and logs are stored in the add-on's `/data` directory, 
 
 **Install builds the add-on on your machine.** It installs about 2 GB of speech libraries, so it takes from about 10 minutes on a fast machine to over an hour on a slow one or in a virtual machine. There's no progress bar, and if you refresh the page while it builds, the **Install** button can come back: don't click it again. **Settings → System → Logs → Supervisor** shows `Build … done` when it's finished.
 
-**On first start**, Gatekeeper downloads the Kokoro TTS model weights (~350 MB) and the selected Whisper model, cached in `/data/cache/`, and pre-synthesizes its phrases. That takes a few minutes, longer on small CPUs. It needs internet access when it starts. It's ready when the log shows `connected to MQTT` (and `listening for button presses`, with the doorbell button set up); the add-on then reports healthy.
+**On first start**, Gatekeeper downloads the Kokoro TTS model weights (~350 MB) and the selected Whisper model, cached in `/data/cache/`, and pre-synthesizes its phrases. That takes a few minutes, longer on small CPUs, and needs internet access; later starts use the cached models. It's ready when the log shows `connected to MQTT` (and `listening for button presses`, with the doorbell button set up); the add-on then reports healthy.
 
 ## Troubleshooting
 
