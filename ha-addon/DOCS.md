@@ -80,6 +80,31 @@ The button is **off until you set** `reolink_host`, `reolink_username` and `reol
 
 To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set `trigger_zones: porch`. Only people who enter one of the listed zones are greeted, and the dwell time counts from entering it. Doorbell presses always count.
 
+## The household leaving
+
+Gatekeeper can tell someone coming out of your front door from a visitor walking up, and not greet them:
+
+1. In Frigate, add a zone named `door` to the camera (*Settings → Masks / Zones*), over the spot where someone stepping out of your front door first appears, and away from where visitors walk up. On a doorbell next to the door, that's usually the bottom corner of the frame on the door's side.
+2. Set `door_zone: door`.
+
+Someone who appears in the zone and walks out of it within `leaving_watch_seconds` (3) isn't greeted or notified; the visit log records `outcome: left`. Someone who walks up within `return_window_seconds` (120) of that is most likely them coming back in, and isn't greeted either (`returned`). Someone who stays at the door is greeted, and a doorbell press always greets. The startup log says `Door zone: off` until it's set.
+
+## Conversations
+
+Some visitors get a short conversation instead of one reply. Every line is a `phrase_*` option (see [Conversation lines](#conversation-lines)), and every answer is in the visit log and the notification.
+
+- **Candidates, campaigns and canvassers:** Gatekeeper asks who they are and who they're with, then what message they'd like passed on. You get one notification with both.
+- **Emergencies:** you get an urgent notification at once, and the visitor hears "I have alerted the resident. Please wait." They're never sent away.
+- **Law enforcement:**
+  1. You get an urgent notification at once.
+  2. Gatekeeper says it's an automated assistant and that the conversation is recorded, and asks the reason for the visit and whether they have a warrant (unless their first sentence already said), then their agency, name and badge number.
+  3. With a warrant, it asks them to hold it close to the camera and whether a judge signed it. It takes six full-resolution photos and sends you the sharpest; all are kept in `/data/audio/snapshots/`.
+  4. **A warrant signed by a judge:** "Thank you. I am notifying the resident now." **Otherwise:** the resident doesn't consent to entry or a search; please leave. If Frigate still sees someone `leave_check_seconds` later, it asks again more firmly.
+
+These lines state the resident's position; they aren't legal advice. Have a lawyer review them (and any change you make) for where you live.
+
+`whisper_hotwords` helps Whisper with names it would otherwise mishear, such as local candidates'.
+
 ## Configuration
 
 | Option | Default | Description |
@@ -92,14 +117,16 @@ To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set 
 | `go2rtc_talk_stream` | `front_door_talk` | go2rtc stream name for talkback |
 | `frigate_api` | `http://ccab4aaf-frigate:5000` | Frigate API, for snapshots in notifications |
 | `trigger_zones` | *(none)* | Comma-separated Frigate zones a person must enter to be greeted |
+| `door_zone` | *(none)* | Frigate zone at the front door; see [The household leaving](#the-household-leaving) |
 | `dwell_seconds` | `1` | Seconds a person must be visible before triggering |
-| `listen_seconds` | `4` | How long to listen after the greeting |
+| `listen_seconds` | `4` | How long to wait for the visitor to start answering (without the audio tap, how long to record) |
 | `session_ttl_seconds` | `120` | Forget a Frigate event this long after its last update |
 | `sweep_interval_seconds` | `1` | How often sessions are checked for dwell and expiry |
 | `cooldown_seconds` | `90` | After a visit, new person detections this soon are merged into it instead of greeting again |
-| `visit_timeout_seconds` | `90` | Give up on a visit (greet, listen, reply) after this long |
+| `visit_timeout_seconds` | `180` | Give up on a visit (greet, listen, reply; a whole conversation) after this long. **Installed before 0.3.0?** Your saved `90` is kept: raise it to `180` |
 | `whisper_model` | `tiny` | Whisper STT model. `tiny` is fastest; `base.en` hears noticeably better (about twice the CPU time) |
 | `whisper_compute_type` | `int8` | Quantization: `int8` for CPU, `float32` if you have issues |
+| `whisper_hotwords` | *(none)* | Comma-separated words and names Whisper should expect |
 | `kokoro_voice` | `af_heart` | TTS voice. See voice options below |
 | `greeting` | *Hello. This property is monitored. Please state the purpose of your visit.* | What Gatekeeper says when a visitor is detected |
 | `reply_delivery` | *Thank you. Please leave the package at the door.* | Reply to a delivery |
@@ -114,6 +141,43 @@ To ignore people on the sidewalk, draw a zone in Frigate (e.g. `porch`) and set 
 | `event_log_retention_days` | `30` | Delete daily visit logs older than this. `0` keeps them forever |
 | `log_level` | `info` | `debug`, `info`, `warning` or `error` |
 | `log_format` | `text` | `text`, or `json` for one JSON object per line. Every line carries the visit's Frigate event id |
+
+### Tuning
+
+Optional; Home Assistant shows them under *Show unused optional configuration options*. Left empty, Gatekeeper's default applies.
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `leaving_watch_seconds` | `3` | How long someone who appears in the door zone has to walk out of it to count as leaving |
+| `leaving_cooldown_seconds` | `15` | After someone leaves by the door, person detections this soon count as them too (Frigate sometimes splits one person's track) |
+| `return_window_seconds` | `120` | Someone walking up this soon after someone left by the door isn't greeted. `0` turns it off |
+| `audio_tap` | `true` | Read the camera's audio all the time and stop listening when the visitor stops talking. `false` records a fixed window per prompt |
+| `vad_threshold` | `0.5` | Speech probability (0.1–0.9) above which audio counts as the visitor talking |
+| `end_silence_ms` | `800` | Silence after the visitor's last word that ends their answer |
+| `max_answer_seconds` | `15` | Cut off an answer longer than this |
+| `talkback_session` | `visit` | `visit`: one talkback connection per visit. `clip`: one per phrase (slower; for cameras that misbehave with a long connection) |
+| `leave_check_seconds` | `20` | After asking an officer without a judge-signed warrant to leave, wait this long before checking whether they did |
+
+### Conversation lines
+
+Optional too: left empty, Gatekeeper's own wording (below) is used, and changes to it arrive with updates.
+
+| Option | Default | When |
+|--------|---------|------|
+| `phrase_emergency_wait` | *I have alerted the resident. Please wait.* | To someone reporting an emergency |
+| `phrase_police_ask_reason` | *This is an automated assistant, and this conversation is recorded. What is the reason for your visit, and do you have a warrant?* | First question to law enforcement, unless their first sentence already said why they came or whether they have a warrant |
+| `phrase_police_disclosure` | *This is an automated assistant, and this conversation is recorded.* | Said instead, right before the next question, when the reason question is skipped |
+| `phrase_police_ask_warrant` | *Do you have a warrant? Please answer yes or no.* | If they haven't said |
+| `phrase_police_ask_identity` | *Please state your agency, your name, and your badge number.* |  |
+| `phrase_police_show_warrant` | *Please hold the warrant close to the camera and keep it still. Is it signed by a judge?* | Six photos are taken while they answer; the sharpest goes with the notification |
+| `phrase_police_hold_warrant` | *Please keep holding it there while I look it over. I'll let you know when I'm finished.* | If they answer before the photos are all taken |
+| `phrase_police_warrant_done` | *I'm finished. You can lower it now.* | Once they are |
+| `phrase_police_notifying` | *Thank you. I am notifying the resident now. Please wait.* | After a judge-signed warrant and their ID |
+| `phrase_police_leave` | *The resident does not consent to entry or a search without a warrant signed by a judge. Please leave the property.* | Otherwise |
+| `phrase_police_leave_again` | *You have been asked to leave. The resident does not consent to your presence, this conversation is recorded, and legal action will be taken if you remain.* | If they're still there `leave_check_seconds` later |
+| `phrase_civic_ask_identity` | *Thanks for stopping by. Could you tell me your name, and who you're with?* | First question to a candidate or canvasser |
+| `phrase_civic_ask_message` | *What message would you like me to pass on to the resident?* |  |
+| `phrase_civic_thanks` | *Thank you. I'll make sure the resident gets your message. Feel free to leave any literature at the door.* |  |
 
 ## Available voices
 
@@ -133,6 +197,7 @@ Audio clips, transcripts and logs are stored in the add-on's `/data` directory, 
 
 - `/data/audio/in/`: recordings of visitors' answers (kept `audio_retention_days`)
 - `/data/audio/out/`: synthesized speech
+- `/data/audio/snapshots/`: photos of warrants held up to the camera
 - `/data/logs/events.jsonl`: today's visit log (JSON Lines). Earlier days are rotated to `events-YYYY-MM-DD.jsonl` and kept `event_log_retention_days`.
 
 ## Installing and first start

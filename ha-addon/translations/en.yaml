@@ -29,12 +29,24 @@ configuration:
   trigger_zones:
     name: Trigger zones
     description: Comma-separated Frigate zones (e.g. porch). Only people who enter one are greeted. Empty means anywhere in view.
+  door_zone:
+    name: Door zone
+    description: A Frigate zone where someone coming out of your front door first appears (e.g. door). Someone who appears there and walks out of it isn't greeted. Empty greets everyone.
+  leaving_watch_seconds:
+    name: Leaving time (seconds)
+    description: How long someone who appears in the door zone has to walk out of it to count as leaving. Default 3.
+  leaving_cooldown_seconds:
+    name: Leaving cooldown (seconds)
+    description: After someone leaves by the door, person detections this soon count as them too. Default 15.
+  return_window_seconds:
+    name: Return window (seconds)
+    description: Someone who walks up this soon after someone left by the door is taken to be them coming back, and isn't greeted. Default 120; 0 turns it off.
   dwell_seconds:
     name: Dwell time (seconds)
     description: How long a person must be visible before Gatekeeper greets them.
   listen_seconds:
     name: Listen time (seconds)
-    description: How long to record the visitor's answer.
+    description: How long to wait for the visitor to start answering (without the audio tap, how long to record).
   session_ttl_seconds:
     name: Session expiry (seconds)
     description: Forget a Frigate event this long after its last update.
@@ -45,7 +57,25 @@ configuration:
     description: After a visit, new person detections this soon are treated as the same visitor and not greeted again.
   visit_timeout_seconds:
     name: Visit timeout (seconds)
-    description: Give up on a visit (greet, listen, reply) after this long.
+    description: Give up on a visit (greet, listen, reply; a whole conversation) after this long. A conversation can take up to 2 minutes.
+  leave_check_seconds:
+    name: Officer leave check (seconds)
+    description: After asking an officer without a judge-signed warrant to leave, wait this long; if Frigate still sees someone, ask again more firmly. Default 20.
+  audio_tap:
+    name: Audio tap
+    description: Read the camera's audio all the time and stop listening when the visitor stops talking. Off records a fixed window per prompt. Default on.
+  vad_threshold:
+    name: Speech threshold
+    description: Speech probability (0.1-0.9) above which audio counts as the visitor talking. Default 0.5.
+  end_silence_ms:
+    name: End-of-answer silence (ms)
+    description: Silence after the visitor's last word that ends their answer. Default 800.
+  max_answer_seconds:
+    name: Longest answer (seconds)
+    description: Cut off an answer longer than this. Default 15.
+  talkback_session:
+    name: Talkback connection
+    description: visit (default) keeps one connection for the whole visit; clip opens one per phrase, for cameras that misbehave with a long connection.
   audio_retention_days:
     name: Keep visitor recordings (days)
     description: Delete recordings of visitors' answers older than this. 0 keeps them forever.
@@ -58,6 +88,9 @@ configuration:
   whisper_compute_type:
     name: Whisper compute type
     description: int8 for CPU; float32 if you have problems.
+  whisper_hotwords:
+    name: Whisper hotwords
+    description: Comma-separated words and names Whisper should expect, e.g. local candidates' names.
   kokoro_voice:
     name: Voice
   greeting:
@@ -77,6 +110,48 @@ configuration:
   reply_pressed:
     name: Reply to a doorbell press during a visit
     description: Said when the doorbell is pressed during a visit or right after one.
+  phrase_emergency_wait:
+    name: "Emergency: wait"
+    description: "Empty: I have alerted the resident. Please wait."
+  phrase_police_ask_reason:
+    name: "Officer: reason and warrant"
+    description: "Empty: This is an automated assistant, and this conversation is recorded. What is the reason for your visit, and do you have a warrant?"
+  phrase_police_disclosure:
+    name: "Officer: disclosure"
+    description: "Empty: This is an automated assistant, and this conversation is recorded."
+  phrase_police_ask_warrant:
+    name: "Officer: warrant?"
+    description: "Empty: Do you have a warrant? Please answer yes or no."
+  phrase_police_ask_identity:
+    name: "Officer: identity"
+    description: "Empty: Please state your agency, your name, and your badge number."
+  phrase_police_show_warrant:
+    name: "Officer: show the warrant"
+    description: "Empty: Please hold the warrant close to the camera and keep it still. Is it signed by a judge?"
+  phrase_police_hold_warrant:
+    name: "Officer: keep holding it"
+    description: "Empty: Please keep holding it there while I look it over. I'll let you know when I'm finished."
+  phrase_police_warrant_done:
+    name: "Officer: photos taken"
+    description: "Empty: I'm finished. You can lower it now."
+  phrase_police_notifying:
+    name: "Officer: notifying the resident"
+    description: "Empty: Thank you. I am notifying the resident now. Please wait."
+  phrase_police_leave:
+    name: "Officer: please leave"
+    description: "Empty: The resident does not consent to entry or a search without a warrant signed by a judge. Please leave the property."
+  phrase_police_leave_again:
+    name: "Officer: second request to leave"
+    description: "Empty: You have been asked to leave. The resident does not consent to your presence, this conversation is recorded, and legal action will be taken if you remain."
+  phrase_civic_ask_identity:
+    name: "Canvasser: who are you"
+    description: "Empty: Thanks for stopping by. Could you tell me your name, and who you're with?"
+  phrase_civic_ask_message:
+    name: "Canvasser: message"
+    description: "Empty: What message would you like me to pass on to the resident?"
+  phrase_civic_thanks:
+    name: "Canvasser: thanks"
+    description: "Empty: Thank you. I'll make sure the resident gets your message. Feel free to leave any literature at the door."
   ntfy_url:
     name: ntfy server URL
     description: Send notifications (with the visitor's snapshot) to this ntfy server. Empty disables them.
