@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-14
+
+Installs Gatekeeper `v0.3.0`, Phase 1's first release. Gatekeeper's changelog has the details.
+
+### Added
+- **Conversations for officers, emergencies and political visitors.** An officer is asked
+  for the reason, a warrant and their ID, and a warrant is photographed for you; an
+  emergency gets an urgent notification and is never sent away; a candidate or canvasser is
+  asked for their message, which is passed on. Every line is a new optional `phrase_*`
+  option. Left empty, Gatekeeper's own wording is used, so a reviewed change to it reaches
+  you with an update.
+- **The household coming out of the front door isn't greeted** (`door_zone`): draw a door
+  zone in Frigate and set it (Documentation, "The household leaving"). Tuning:
+  `leaving_watch_seconds`, `leaving_cooldown_seconds`, `return_window_seconds`.
+- **Replies come sooner:** Gatekeeper reads the camera's audio all the time and stops
+  listening when the visitor stops talking, instead of recording a fixed window, and keeps
+  one talkback connection per visit. Tuning: `audio_tap`, `vad_threshold`,
+  `end_silence_ms`, `max_answer_seconds`, `talkback_session`.
+- `whisper_hotwords` (names Whisper should expect) and `leave_check_seconds`.
+
+### Changed
+- **`visit_timeout_seconds` defaults to 180** (was 90): a conversation can take up to 2
+  minutes. An existing install keeps its saved value, so raise it by hand; until then the
+  log warns at startup.
+- **Answers Whisper made up from noise are ignored**, and a turn where nobody spoke isn't
+  transcribed, so the next prompt comes sooner.
+
+Gatekeeper's NVIDIA GPU support is for its Docker Compose install; the add-on stays on the
+CPU.
+
 ## [0.2.1] - 2026-10-13
 
 Installs Gatekeeper `v0.2.1`.

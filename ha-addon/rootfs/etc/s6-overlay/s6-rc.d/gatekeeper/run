@@ -19,10 +19,18 @@ fi
 for option in \
     camera_name mqtt_host mqtt_port mqtt_username mqtt_password mqtt_topic \
     audio_rtsp_url go2rtc_api go2rtc_talk_stream frigate_api trigger_zones \
+    door_zone leaving_watch_seconds leaving_cooldown_seconds return_window_seconds \
     dwell_seconds listen_seconds session_ttl_seconds sweep_interval_seconds \
-    cooldown_seconds visit_timeout_seconds audio_retention_days event_log_retention_days \
-    whisper_model whisper_compute_type kokoro_voice \
+    cooldown_seconds visit_timeout_seconds leave_check_seconds \
+    audio_tap vad_threshold end_silence_ms max_answer_seconds talkback_session \
+    audio_retention_days event_log_retention_days \
+    whisper_model whisper_compute_type whisper_hotwords kokoro_voice \
     greeting reply_delivery reply_sales reply_maintenance reply_generic reply_no_answer reply_pressed \
+    phrase_emergency_wait phrase_police_disclosure phrase_police_ask_reason \
+    phrase_police_ask_warrant phrase_police_ask_identity phrase_police_show_warrant \
+    phrase_police_hold_warrant phrase_police_warrant_done phrase_police_notifying \
+    phrase_police_leave phrase_police_leave_again \
+    phrase_civic_ask_identity phrase_civic_ask_message phrase_civic_thanks \
     ntfy_url ntfy_topic ntfy_token reolink_host reolink_username reolink_password \
     log_level log_format; do
     if bashio::config.has_value "${option}"; then
@@ -30,6 +38,11 @@ for option in \
         export "${option^^}=${value}"
     fi
 done
+
+# Saved options outlive updates: an install from before 0.3.0 still has 90.
+if (( ${VISIT_TIMEOUT_SECONDS:-180} < 180 )); then
+    bashio::log.warning "visit_timeout_seconds is ${VISIT_TIMEOUT_SECONDS}: a conversation with an officer or a canvasser can take up to 2 minutes. Set it to 180 (the default since 0.3.0)."
+fi
 
 if [[ -z "${MQTT_HOST:-}" ]]; then
     bashio::log.warning "No MQTT broker: install the Mosquitto broker add-on or set mqtt_host."
@@ -49,6 +62,7 @@ bashio::log.info "Camera: ${CAMERA_NAME}"
 bashio::log.info "MQTT: ${MQTT_HOST}:${MQTT_PORT:-1883} (user: ${MQTT_USERNAME:-none})"
 bashio::log.info "go2rtc API: ${GO2RTC_API}"
 bashio::log.info "Notifications: ${NTFY_URL:-off}; doorbell button: ${REOLINK_HOST:-off}"
+bashio::log.info "Door zone: ${DOOR_ZONE:-off}"
 bashio::log.info "Whisper model: ${WHISPER_MODEL} (${WHISPER_COMPUTE_TYPE})"
 bashio::log.info "Voice: ${KOKORO_VOICE}"
 
