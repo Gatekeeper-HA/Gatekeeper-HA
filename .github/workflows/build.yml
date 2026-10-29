@@ -1,0 +1,69 @@
+name: Build add-on images
+
+# The add-on's images, built here so that installing it is a download rather than a build
+# on the user's machine (about 2 GB of Python libraries: 85 minutes on the test VM). Each
+# architecture builds on its own native runner. Pull requests only check that they build;
+# main pushes them to ghcr.io as ghcr.io/gatekeeper-ha/<arch>-addon-gatekeeper:<version>,
+# the version in ha-addon/config.yaml (what the Supervisor pulls once config.yaml names
+# the image).
+
+on:
+  pull_request:
+    paths: ["ha-addon/**", ".github/workflows/build.yml"]
+  push:
+    branches: [main]
+    paths: ["ha-addon/**", ".github/workflows/build.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: What to build
+        id: what
+        run: |
+          # Top-level scalars in the add-on's YAML (no yq on every runner).
+          value() { sed -n "s/^ *$2: *\"\{0,1\}\([^\"]*\)\"\{0,1\} *$/\1/p" "$1" | head -1; }
+          version=$(value ha-addon/config.yaml version)
+          base=$(value ha-addon/build.yaml "${{ matrix.arch }}")
+          ref=$(value ha-addon/build.yaml GATEKEEPER_REF)
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.arch }}-addon-gatekeeper"
+          for v in version base ref; do
+            if [ -z "${!v}" ]; then echo "::error::no $v found"; exit 1; fi
+          done
+          { echo "version=$version"; echo "base=$base"; echo "ref=$ref"; echo "image=$image"; } \
+            >> "$GITHUB_OUTPUT"
+          echo "Building $image:$version from $base, Gatekeeper $ref"
+
+      - name: Log in to ghcr.io
+        if: github.event_name != 'pull_request'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build${{ github.event_name != 'pull_request' && ' and push' || '' }}
+        run: |
+          docker buildx build ha-addon \
+            --platform "linux/${{ matrix.arch == 'aarch64' && 'arm64' || 'amd64' }}" \
+            --build-arg "BUILD_FROM=${{ steps.what.outputs.base }}" \
+            --build-arg "GATEKEEPER_REF=${{ steps.what.outputs.ref }}" \
+            --label "io.hass.type=addon" \
+            --label "io.hass.arch=${{ matrix.arch }}" \
+            --label "io.hass.version=${{ steps.what.outputs.version }}" \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --tag "${{ steps.what.outputs.image }}:${{ steps.what.outputs.version }}" \
+            ${{ github.event_name != 'pull_request' && '--push' || '' }}
