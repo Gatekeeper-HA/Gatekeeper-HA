@@ -2,6 +2,9 @@ name: "Gatekeeper AI Doorbell"
 description: "AI-powered doorbell assistant. Greets visitors via speaker, listens for their response, classifies their intent, and replies — all processed locally."
 version: "0.3.0"
 slug: "gatekeeper"
+# Prebuilt by .github/workflows/build.yml for each architecture, tagged with the version:
+# installing is a download, not a build on your machine.
+image: "ghcr.io/gatekeeper-ha/{arch}-addon-gatekeeper"
 url: "https://github.com/Gatekeeper-HA/Gatekeeper-HA"
 arch:
   - aarch64
